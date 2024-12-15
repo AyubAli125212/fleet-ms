@@ -1,0 +1,71 @@
+openapi: 3.0.0
+info:
+  title: Fleet Management System API
+  version: 1.0.0
+  description: This is the API documentation for a simple vehicle management system.
+  contact:
+    name: API Support
+    email: ayubali125212@gmail.com
+  license:
+    name: MIT
+    url: 'https://opensource.org/licenses/MIT'
+
+servers:
+  - url: 'http://localhost:8000/api/v1'
+    description: Local development server
+  - url: 'https://fleet-ms.onrender.com/api/v1'
+    description: Production server
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+schemas:
+    User:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          format: password
+      required:
+        - name
+        - email
+        - password
+
+    Vehicle:
+      type: object
+      properties:
+        userId:
+          type: string
+          format: objectid
+        licensePlate:
+          type: string
+        name:
+          type: string
+        brand:
+          type: string
+        model:
+          type: string
+        year:
+          type: integer
+        status:
+          type: string
+          enum:
+            - active
+            - inactive
+      required:
+        - userId
+        - licensePlate
+        - name
+        - brand
+        - model
+        - year
+        - status

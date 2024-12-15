@@ -9,6 +9,7 @@ const connectDB = require("./config/dbConn");
 const rateLimiter = require("./middleware/rateLimiter");
 const { authRoutes, managerRoutes } = require("./routes");
 const { loadRoutes } = require("./utils");
+const swaggerConfig = require("./config/swaggerConfig");
 
 // Enable Helmet for all routes
 app.use(helmet());
@@ -37,6 +38,9 @@ const routes = [
 // Load all routes
 loadRoutes(app, routes);
 
+// Swagger route
+app.use("/api-docs", swaggerConfig.serve, swaggerConfig.setup);
+
 // Graceful shutdown handlers
 process.on("SIGINT", async () => {
   console.log("\nGracefully shutting down...");
@@ -54,5 +58,6 @@ mongoose.connection.once("open", () => {
   console.log("Connected to MongoDB");
   app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
+    console.log(`Swagger Docs at http://localhost:${PORT}/api-docs`);
   });
 });

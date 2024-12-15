@@ -1,0 +1,97 @@
+tags:
+  - name: Authentication
+    description: Endpoints for user authentication and authorization
+
+paths:
+  /auth/check-email:
+    get:
+      summary: Check if an email is unique
+      tags:
+        - Authentication
+      parameters:
+        - in: query
+          name: email
+          schema:
+            type: string
+            format: email
+          required: true
+          description: Email to check for uniqueness
+      responses:
+        200:
+          description: Email availability status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  isUnique:
+                    type: boolean
+                    description: Indicates if the email is unique
+                    example: true
+
+  /auth/signup:
+    post:
+      summary: Create a new user account
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - email
+                - password
+              properties:
+                name:
+                  type: string
+                  example: John Doe
+                email:
+                  type: string
+                  format: email
+                  example: john.doe@example.com
+                password:
+                  type: string
+                  format: password
+                  example: StrongPassword123
+      responses:
+        201:
+          description: User successfully registered
+
+  /auth/login:
+    post:
+      summary: Log in a user
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: ayubali125212@gmail.com
+                password:
+                  type: string
+                  format: password
+                  example: aaaaaa
+      responses:
+        200:
+          description: User successfully logged in
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    description: JWT token
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9

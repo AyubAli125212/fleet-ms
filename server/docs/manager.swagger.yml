@@ -1,0 +1,151 @@
+tags:
+  - name: Manager
+    description: Endpoints for vehicle management functionalities
+
+paths:
+  /manager/vehicles:
+    get:
+      tags:
+        - Vehicle
+      summary: Get list of vehicles
+      description: Fetch a list of vehicles for the authenticated user.
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Successfully fetched vehicles
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        userId:
+                          type: string
+                          description: The ID of the user who owns the vehicle.
+                        licensePlate:
+                          type: string
+                          description: The unique license plate of the vehicle.
+                        name:
+                          type: string
+                          description: The name of the vehicle.
+                        brand:
+                          type: string
+                          description: The brand of the vehicle.
+                        model:
+                          type: string
+                          description: The model of the vehicle.
+                        year:
+                          type: integer
+                          description: The manufacturing year of the vehicle.
+                        status:
+                          type: string
+                          enum: [active, inactive]
+                          description: The status of the vehicle (active or inactive).
+                        createdAt:
+                          type: string
+                          format: date-time
+                          description: The date and time when the vehicle was created.
+                        updatedAt:
+                          type: string
+                          format: date-time
+                          description: The date and time when the vehicle was last updated.
+        401:
+          description: Unauthorized
+        500:
+          description: Internal server error
+
+  /manager/vehicle:
+    post:
+      tags:
+        - Vehicle
+      summary: Create a new vehicle
+      description: Create a new vehicle for the authenticated user.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - licensePlate
+                - name
+                - brand
+                - model
+                - year
+                - status
+              properties:
+                licensePlate:
+                  type: string
+                  description: The unique license plate of the vehicle.
+                name:
+                  type: string
+                  description: The name of the vehicle.
+                brand:
+                  type: string
+                  description: The brand of the vehicle.
+                model:
+                  type: string
+                  description: The model of the vehicle.
+                year:
+                  type: integer
+                  description: The manufacturing year of the vehicle.
+                status:
+                  type: string
+                  enum: [active, inactive]
+                  description: The status of the vehicle (active or inactive).
+      responses:
+        201:
+          description: Successfully created the vehicle
+        400:
+          description: Bad request due to invalid input data
+        401:
+          description: Unauthorized
+        500:
+          description: Internal server error
+
+  /manager/vehicles/{id}/status:
+    patch:
+      tags:
+        - Vehicle
+      summary: Toggle vehicle status
+      description: Activate or deactivate a specific vehicle.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The ID of the vehicle to update status.
+          schema:
+            type: string
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  enum: [active, inactive]
+                  description: The new status of the vehicle.
+      responses:
+        200:
+          description: Vehicle status toggled successfully
+        400:
+          description: Bad request due to invalid status
+        401:
+          description: Unauthorized
+        404:
+          description: Vehicle not found
+        500:
+          description: Internal server error
