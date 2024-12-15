@@ -12,11 +12,11 @@ import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { Users, UserRoundCheck, UserRoundX } from "lucide-react";
 import Overview from "@/components/manager/Overview";
 import RecentActions from "@/components/manager/RecentActions";
-import { LoaderFunction, LoaderFunctionArgs, useLoaderData } from "react-router-dom";
+import { LoaderFunction, useLoaderData } from "react-router-dom";
 import { GetManagerDashboard } from "@/api/ManagerAPI";
 import { ManagerDashboardData } from "@/constants/types";
 
-export const loader: LoaderFunction = async ({ request }: LoaderFunctionArgs) => {
+export const loader: LoaderFunction = async () => {
   try {
     const response = await GetManagerDashboard();
     return response.data; 
