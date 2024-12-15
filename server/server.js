@@ -14,8 +14,9 @@ const swaggerConfig = require("./config/swaggerConfig");
 // Enable Helmet for all routes
 app.use(helmet());
 
+
 // Enable rate limiting for all routes
-app.use(rateLimiter);
+// app.use(rateLimiter);
 
 // Enable CORS for all routes
 app.use(cors());
