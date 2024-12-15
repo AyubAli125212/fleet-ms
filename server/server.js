@@ -1,11 +1,58 @@
-const express = require('express');
+require("dotenv").config();
+const PORT = process.env.PORT || 8000;
+const express = require("express");
 const app = express();
-const port = 3000;
+const mongoose = require("mongoose");
+const cors = require("cors");
+const helmet = require("helmet");
+const connectDB = require("./config/dbConn");
+const rateLimiter = require("./middleware/rateLimiter");
+const { authRoutes, managerRoutes } = require("./routes");
+const { loadRoutes } = require("./utils");
 
-app.get('/', (req, res) => {
-  res.send('Hello World!');
+// Enable Helmet for all routes
+app.use(helmet());
+
+// Enable rate limiting for all routes
+app.use(rateLimiter);
+
+// Enable CORS for all routes
+app.use(cors());
+
+// Connect to MongoDB
+connectDB();
+
+// middleware to handle urlencoded form data
+app.use(express.urlencoded({ extended: false }));
+
+// middleware for json
+app.use(express.json());
+
+// Define routes
+const routes = [
+  { path: "/api/v1/auth", route: authRoutes },
+  { path: "/api/v1/manager", route: managerRoutes },
+];
+
+// Load all routes
+loadRoutes(app, routes);
+
+// Graceful shutdown handlers
+process.on("SIGINT", async () => {
+  console.log("\nGracefully shutting down...");
+  await mongoose.connection.close();
+  process.exit(0);
 });
 
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+process.on("SIGTERM", async () => {
+  console.log("\nGracefully shutting down...");
+  await mongoose.connection.close();
+  process.exit(0);
+});
+
+mongoose.connection.once("open", () => {
+  console.log("Connected to MongoDB");
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
 });
